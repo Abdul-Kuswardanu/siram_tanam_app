@@ -49,7 +49,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'SmartSiram/dashboard';
+$route['default_controller'] = 'SmartSiram/akun_lokal';
 $route['dashboard'] = 'SmartSiram/dashboard';
 $route['sistem-waktu'] = 'SmartSiram/sistem_waktu';
 $route['tanaman'] = 'SmartSiram/tanaman';
