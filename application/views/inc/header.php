@@ -82,7 +82,7 @@
     <h4>🌿 Smart Siram</h4>
     <hr style="border-color: rgba(255,255,255,0.3)">
     <a href="<?= site_url('dashboard') ?>">🏠 Dashboard</a>
-    <a href="<?= site_url('sistem-waktu') ?>">⏰ Sistem Waktu</a>
+    <a href="<?= site_url('sistemwaktu') ?>">⏰ Sistem Waktu</a>
     <a href="<?= site_url('tanaman') ?>">🌱 Tanaman</a>
     <a href="<?= site_url('area_tanaman') ?>">🌾 Area Tanaman</a>
     <a href="<?= site_url('akun_lokal') ?>">👤 Akun Lokal</a>
