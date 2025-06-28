@@ -13,7 +13,13 @@ class SmartSiram extends CI_Controller {
     }
 
     public function sistem_waktu() {
-        $this->load->view('sistem_waktu/sistem_waktu');
+        $this->load->model('M_Tanaman');
+        $this->load->model('M_Area_Tanaman');
+
+        $data['tanaman'] = $this->M_Tanaman->get_all();
+        $data['area'] = $this->M_Area_Tanaman->get_all();
+        
+        $this->load->view('sistem_waktu/sistem_waktu', $data);
     }
 
     public function tanaman() {
