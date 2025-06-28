@@ -27,4 +27,11 @@ class SmartSiram extends CI_Controller {
     public function akun_lokal() {
         $this->load->view('akun_lokal/akun_lokal');
     }
+
+    public function login() {
+        $this->load->view('auth/login');
+    }
+    public function daftar() {
+        $this->load->view('auth/daftar');
+    }
 }

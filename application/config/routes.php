@@ -55,5 +55,7 @@ $route['sistem-waktu'] = 'SmartSiram/sistem_waktu';
 $route['tanaman'] = 'SmartSiram/tanaman';
 $route['area_tanaman'] = 'SmartSiram/area_tanaman';
 $route['akun_lokal'] = 'SmartSiram/akun_lokal';
+$route['login'] = 'auth/login';
+$route['daftar'] = 'auth/daftar';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

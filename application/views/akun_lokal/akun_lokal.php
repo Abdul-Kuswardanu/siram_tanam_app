@@ -27,7 +27,7 @@
             <hr class="my-4">
 
             <p class="text-center text-muted mb-2">Ingin pengalaman lebih lengkap?</p>
-            <a href="#" class="btn btn-outline-secondary w-100">✨ Daftar / Login Akun Lengkap</a>
+            <a href="<?= site_url('login') ?>" class="btn btn-outline-secondary w-100">✨ Daftar / Login Akun Lengkap</a>
 
         </div>
     </div>
