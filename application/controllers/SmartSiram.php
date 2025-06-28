@@ -17,11 +17,16 @@ class SmartSiram extends CI_Controller {
     }
 
     public function tanaman() {
-        $this->load->view('tanaman/tanaman');
+        $this->load->model('M_Tanaman');
+        $data['tanaman'] = $this->M_Tanaman->get_all();
+        $this->load->view('tanaman/tanaman', $data);
     }
 
     public function area_tanaman() {
-        $this->load->view('area_tanaman/area_tanaman');
+        $this->load->model('M_Area_Tanaman');
+        $data['area'] = $this->M_Area_Tanaman->get_all();        
+        $data['tanaman'] = $this->M_Area_Tanaman->get_tanaman(); 
+        $this->load->view('area_tanaman/area_tanaman', $data);           
     }
 
     public function akun_lokal() {

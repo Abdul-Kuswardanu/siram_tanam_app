@@ -13,5 +13,26 @@
     sidebar.classList.toggle("sidebar-collapsed");
   });
 </script>
+<!-- jQuery (wajib untuk toastr) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+<?php if ($this->session->flashdata('success')) : ?>
+  toastr.success("<?= $this->session->flashdata('success'); ?>");
+<?php endif; ?>
+<?php if ($this->session->flashdata('error')) : ?>
+  toastr.error("<?= $this->session->flashdata('error'); ?>");
+<?php endif; ?>
+</script>
+<script>
+toastr.options = {
+  "closeButton": true,
+  "progressBar": true,
+  "positionClass": "toast-top-right",
+  "timeOut": "3000"
+};
+</script>
 </body>
 </html>
