@@ -17,8 +17,8 @@
             </div>
 
             <div class="mb-3">
-                <label for="pin" class="form-label fw-bold">PIN (Opsional)</label>
-                <input type="password" class="form-control" id="pin" placeholder="Boleh dikosongkan">
+                <label for="nama_pengguna" class="form-label fw-bold">Nomor HP</label>
+                <input type="number" class="form-control" id="nomor_hp" placeholder="Contoh: 08123456789">
             </div>
 
             <button type="submit" class="btn btn-primary w-100">🚪 Masuk Sebagai Tamu</button>
