@@ -2,10 +2,29 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class SmartSiram extends CI_Controller {
-
-    public function __construct() {
+    
+    public function __construct()
+    {
         parent::__construct();
         $this->load->helper('url');
+
+        // Guest check
+        if ($this->session->userdata('is_guest')) {
+            $guest_start = $this->session->userdata('guest_start');
+            $sisa_detik = (3 * 24 * 60 * 60) - (time() - $guest_start);
+            if ($sisa_detik <= 0) {
+                $this->session->sess_destroy();
+                redirect('auth/daftar');
+                exit;
+            }
+            // Simpan untuk dipakai di view
+            $this->sisa_detik = $sisa_detik;
+        }
+        // Registered user check (opsional, biar aman)
+        else if (!$this->session->userdata('is_login')) {
+            redirect('auth/login');
+            exit;
+        }
     }
 
     public function tanaman_sistem_waktu()

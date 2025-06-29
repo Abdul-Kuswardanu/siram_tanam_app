@@ -3,6 +3,46 @@
 <div class="main-content">
     <h1 class="mb-4">🏠 Dashboard Smart Siram</h1>
 
+    <?php if ($this->session->userdata('is_guest') && isset($sisa_detik)): ?>
+    <div class="text-center mb-4">
+        <h5 class="fw-bold">⏳ Masa trial akun lokal:</h5>
+        <div id="countdown" class="fs-4 text-danger"></div>
+    </div>
+    <!-- SweetAlert2 CDN, biar popup notifnya lebih cakep -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let sisa = <?= $sisa_detik ?>;
+        function pad(n) {return n<10?'0'+n:n}
+        function updateCountdown() {
+        if (sisa <= 0) {
+            document.getElementById('countdown').innerHTML = "Trial habis!";
+            setTimeout(function(){ location.href = "<?= site_url('auth/daftar') ?>"; }, 2000);
+            return;
+        }
+        let d = Math.floor(sisa/86400), h = Math.floor((sisa%86400)/3600), m = Math.floor((sisa%3600)/60), s2 = sisa%60;
+        document.getElementById('countdown').innerHTML = `${pad(d)} hari ${pad(h)}:${pad(m)}:${pad(s2)}`;
+        // Popup notif 30 menit terakhir (1800 detik)
+        if (sisa === 1800) {
+            if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: 'warning',
+                title: '⏰ Waktu akun lokal tinggal 30 menit!',
+                text: 'Segera daftar akun untuk akses penuh dashboard.',
+                timer: 8000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+            } else {
+            alert("⏰ Waktu akun lokal tinggal 30 menit lagi! Segera daftar akun untuk akses penuh.");
+            }
+        }
+        sisa--;
+        setTimeout(updateCountdown, 1000);
+        }
+        updateCountdown();
+    </script>
+    <?php endif; ?>
+
     <!-- Modal Tambah Alat -->
     <div class="modal fade" id="modalTambahAlat" tabindex="-1">
         <div class="modal-dialog">
