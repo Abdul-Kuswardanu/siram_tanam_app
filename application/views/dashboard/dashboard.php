@@ -40,10 +40,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Pilih alat yang ingin dihapus:</p>
-                        <select name="id" class="form-select" required>
+                        <p class="mb-2">Pilih alat yang ingin dihapus:</p>
+                        <select name="id_alat" class="form-select" required>
                             <?php foreach ($alat as $a): ?>
-                                <option value="<?= $a->id ?>"><?= $a->nama_alat ?> (<?= $a->status ?>)</option>
+                                <option value="<?= $a->id_alat ?>"><?= $a->nama_alat ?> (<?= $a->status ?>)</option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -61,19 +61,29 @@
             <h4 class="fw-bold mb-3">🔌 Status Alat</h4>
 
             <?php if (!empty($alat)): ?>
+                <div class="mb-3">
+                    <strong>Status Alat Terpilih:</strong>
+                    <span id="statusBadge" class="badge p-2"></span>
+                </div>
+
                 <form method="post" action="<?= site_url('smartsiram/update_status') ?>">
-                    <div class="mb-3">
-                        <label class="form-label">Pilih Alat Aktif</label>
-                        <div class="input-group">
-                            <select name="id" class="form-select" required>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-6">
+                            <label class="form-label">Pilih Alat</label>
+                            <select name="id_alat" id="selectAlat" class="form-select" required>
                                 <?php foreach ($alat as $a): ?>
-                                        <option value="<?= $a->id ?>" <?= (isset($alat_aktif) && is_object($alat_aktif) && property_exists($alat_aktif, 'id') && $alat_aktif->id == $a->id) ? 'selected' : '' ?>>
-                                        <?= $a->nama_alat ?> <?= $a->status == 'aktif' ? '(AKTIF)' : '' ?>
+                                    <option 
+                                        value="<?= $a->id_alat ?>" 
+                                        data-status="<?= $a->status ?>"
+                                        <?= (isset($alat_aktif) && $alat_aktif->id_alat == $a->id_alat) ? 'selected' : '' ?>>
+                                        <?= $a->nama_alat ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <button type="submit" name="status" value="aktif" class="btn btn-success px-3">✅ Aktifkan</button>
-                            <button type="submit" name="status" value="nonaktif" class="btn btn-danger px-3 ms-2">❌ Nonaktifkan</button>
+                        </div>
+                        <div class="col-md-6 d-flex gap-2 mt-4 mt-md-0">
+                            <button type="submit" name="status" value="aktif" class="btn btn-success w-50">Aktifkan</button>
+                            <button type="submit" name="status" value="nonaktif" class="btn btn-danger w-50">Nonaktifkan</button>
                         </div>
                     </div>
                 </form>
@@ -81,15 +91,40 @@
                 <p class="text-muted">Belum ada alat terdaftar.</p>
             <?php endif; ?>
 
-            <?php if ($total_alat < 3): ?>
-                <button class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#modalTambahAlat">➕ Tambah Alat</button>
-            <?php endif; ?>
-
-            <?php if ($total_alat > 0): ?>
-                <button class="btn btn-outline-danger mt-2 ms-2" data-bs-toggle="modal" data-bs-target="#modalHapusAlat">🗑️ Hapus Alat</button>
-            <?php endif; ?>
+            <div class="mt-3">
+                <?php if ($total_alat < 3): ?>
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalTambahAlat">➕ Tambah Alat</button>
+                <?php endif; ?>
+                <?php if ($total_alat > 0): ?>
+                    <button class="btn btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#modalHapusAlat">🗑️ Hapus Alat</button>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
+
+    <!-- Script Status Badge Dinamis -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById('selectAlat');
+            const badge = document.getElementById('statusBadge');
+
+            function updateStatus() {
+                const selected = select.options[select.selectedIndex];
+                const status = selected.getAttribute('data-status');
+
+                if (status === 'aktif') {
+                    badge.className = 'badge bg-success p-2';
+                    badge.innerText = '✅ AKTIF';
+                } else {
+                    badge.className = 'badge bg-danger p-2';
+                    badge.innerText = '❌ NONAKTIF';
+                }
+            }
+
+            select.addEventListener('change', updateStatus);
+            updateStatus(); // set default saat load
+        });
+    </script>
 
     <!-- Tanaman yang Sudah Disiram Hari Ini -->
     <div class="card shadow-sm border-0 mb-4">
@@ -99,14 +134,25 @@
                 <table class="table table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>#</th>
+                            <th>No</th>
                             <th>Nama Tanaman</th>
                             <th>Waktu Penyiraman</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1</td><td>Lidah Buaya</td><td>07:00</td></tr>
-                        <tr><td>2</td><td>Kaktus Mini</td><td>16:00</td></tr>
+                        <?php if (!empty($tanaman_diseram)) : ?>
+                        <?php $no = 1; foreach ($tanaman_diseram as $row) : ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= $row->nama_tanaman ?></td>
+                                <td><?= date('H:i', strtotime($row->jam_mulai)) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Tidak ada tanaman yang disiram hari ini.</td>
+                        </tr>
+                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -121,26 +167,30 @@
                 <table class="table table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>#</th>
-                            <th>Jam Mulai</th>
-                            <th>Jam Selesai</th>
-                            <th>Hari</th>
+                        <th>#</th>
+                        <th>Hari</th>
+                        <th>Jam</th>
+                        <th>Mode</th>
+                        <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1</td><td>07:00</td><td>09:00</td><td>Setiap Hari</td></tr>
-                        <tr><td>2</td><td>16:00</td><td>17:00</td><td>Senin, Rabu, Jumat</td></tr>
+                        <?php if (!empty($jadwal)) : $no = 1; ?>
+                        <?php foreach ($jadwal as $row) : ?>
+                            <tr>
+                            <td><?= $no++ ?></td>
+                            <td><?= $row->hari ?></td>
+                            <td><?= $row->jam_mulai ?> - <?= $row->jam_selesai ?></td>
+                            <td><?= ucfirst($row->mode) ?></td>
+                            <td><?= ucfirst($row->status) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php else : ?>
+                        <tr><td colspan="7" class="text-center text-muted">Belum ada data jadwal.</td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <!-- 📈 Grafik Dummy Line Chart -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <h4 class="fw-bold mb-3">📈 Perbandingan Jadwal Tanaman vs Area</h4>
-            <canvas id="grafikLine" height="200"></canvas>
         </div>
     </div>
 </div>

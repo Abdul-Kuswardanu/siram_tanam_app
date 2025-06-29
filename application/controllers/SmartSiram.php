@@ -10,8 +10,8 @@ class SmartSiram extends CI_Controller {
     }
 
     public function dashboard() {
-        $data['alat'] = $this->SmartSiram_model->get_semua_alat();
-        $data['alat_aktif'] = $this->SmartSiram_model->get_alat_aktif();
+        $data['alat'] = $this->M_Alat->get_all();
+        $data['alat_aktif'] = $this->M_Alat->get_alat_aktif();
         $data['total_alat'] = $this->M_Alat->total_alat();
 
         $this->load->view('dashboard/dashboard', $data);
@@ -28,8 +28,8 @@ class SmartSiram extends CI_Controller {
     }
 
     public function update_status(){
-
-        $id = $this->input->post('id');
+        
+        $id = $this->input->post('id_alat');
         $status = $this->input->post('status');
 
         if (!$id || !$status) {
@@ -41,13 +41,13 @@ class SmartSiram extends CI_Controller {
         $this->db->update('tb_alat', ['status' => 'nonaktif']);
 
         // update alat yang dipilih jadi aktif/nonaktif
-        $this->db->where('id', $id)->update('tb_alat', ['status' => $status]);
+        $this->db->where('id_alat', $id)->update('tb_alat', ['status' => $status]);
 
         redirect('smartsiram/dashboard');
     }
 
     public function hapus_alat() {
-        $id = $this->input->post('id');
+        $id = $this->input->post('id_alat');
         $this->M_Alat->delete($id);
         redirect('smartsiram/dashboard');
     }

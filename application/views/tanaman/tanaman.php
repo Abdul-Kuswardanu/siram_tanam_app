@@ -46,7 +46,7 @@
         <table class="table table-bordered align-middle">
           <thead class="table-light">
             <tr>
-              <th>#</th>
+              <th>No</th>
               <th>Nama</th>
               <th>Jenis</th>
               <th>Lokasi</th>

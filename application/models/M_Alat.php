@@ -17,11 +17,11 @@ class M_Alat extends CI_Model {
 
     public function update_status($id, $status) {
         $this->db->update('tb_alat', ['status' => 'nonaktif']); // reset semua
-        return $this->db->update('tb_alat', ['status' => $status], ['id' => $id]);
+        return $this->db->update('tb_alat', ['status' => $status], ['id_alat' => $id]);
     }
 
     public function delete($id) {
-        return $this->db->delete('tb_alat', ['id' => $id]);
+        return $this->db->delete('tb_alat', ['id_alat' => $id]);
     }
 
     public function total_alat() {
