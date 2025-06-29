@@ -3,13 +3,91 @@
 <div class="main-content">
     <h1 class="mb-4">🏠 Dashboard Smart Siram</h1>
 
+    <!-- Modal Tambah Alat -->
+    <div class="modal fade" id="modalTambahAlat" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="post" action="<?= site_url('smartsiram/tambah_alat') ?>">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah Alat Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Alat</label>
+                            <input type="text" name="nama_alat" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kode Alat</label>
+                            <input type="text" name="kode_alat" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Hapus Alat -->
+    <div class="modal fade" id="modalHapusAlat" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="post" action="<?= site_url('smartsiram/hapus_alat') ?>">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Hapus Alat</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Pilih alat yang ingin dihapus:</p>
+                        <select name="id" class="form-select" required>
+                            <?php foreach ($alat as $a): ?>
+                                <option value="<?= $a->id ?>"><?= $a->nama_alat ?> (<?= $a->status ?>)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">🗑️ Hapus</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Status Alat -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <h4 class="fw-bold mb-3">🔌 Status Alat</h4>
-            <p class="mb-3">Alat Saat Ini: <span class="badge bg-success">AKTIF</span></p>
-            <button class="btn btn-danger me-2">❌ Matikan Alat</button>
-            <button class="btn btn-success">✅ Nyalakan Alat</button>
+
+            <?php if (!empty($alat)): ?>
+                <form method="post" action="<?= site_url('smartsiram/update_status') ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Alat Aktif</label>
+                        <div class="input-group">
+                            <select name="id" class="form-select" required>
+                                <?php foreach ($alat as $a): ?>
+                                        <option value="<?= $a->id ?>" <?= (isset($alat_aktif) && is_object($alat_aktif) && property_exists($alat_aktif, 'id') && $alat_aktif->id == $a->id) ? 'selected' : '' ?>>
+                                        <?= $a->nama_alat ?> <?= $a->status == 'aktif' ? '(AKTIF)' : '' ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" name="status" value="aktif" class="btn btn-success px-3">✅ Aktifkan</button>
+                            <button type="submit" name="status" value="nonaktif" class="btn btn-danger px-3 ms-2">❌ Nonaktifkan</button>
+                        </div>
+                    </div>
+                </form>
+            <?php else: ?>
+                <p class="text-muted">Belum ada alat terdaftar.</p>
+            <?php endif; ?>
+
+            <?php if ($total_alat < 3): ?>
+                <button class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#modalTambahAlat">➕ Tambah Alat</button>
+            <?php endif; ?>
+
+            <?php if ($total_alat > 0): ?>
+                <button class="btn btn-outline-danger mt-2 ms-2" data-bs-toggle="modal" data-bs-target="#modalHapusAlat">🗑️ Hapus Alat</button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -65,7 +143,6 @@
             <canvas id="grafikLine" height="200"></canvas>
         </div>
     </div>
-
 </div>
 
 <!-- Chart.js CDN -->

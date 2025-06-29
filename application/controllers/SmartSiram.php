@@ -6,10 +6,50 @@ class SmartSiram extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->helper('url');
+        $this->load->model('M_Alat');
     }
 
     public function dashboard() {
-        $this->load->view('dashboard/dashboard');
+        $data['alat'] = $this->SmartSiram_model->get_semua_alat();
+        $data['alat_aktif'] = $this->SmartSiram_model->get_alat_aktif();
+        $data['total_alat'] = $this->M_Alat->total_alat();
+
+        $this->load->view('dashboard/dashboard', $data);
+    }
+
+    public function tambah_alat() {
+        $data = [
+            'nama_alat' => $this->input->post('nama_alat'),
+            'kode_alat' => $this->input->post('kode_alat'),
+            'status' => 'nonaktif'
+        ];
+        $this->M_Alat->insert($data);
+        redirect('smartsiram/dashboard');
+    }
+
+    public function update_status(){
+
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+
+        if (!$id || !$status) {
+            // Kasih error handling biar gak nekat update
+            show_error('ID atau status tidak valid');
+        }
+
+        // reset semua alat ke nonaktif dulu
+        $this->db->update('tb_alat', ['status' => 'nonaktif']);
+
+        // update alat yang dipilih jadi aktif/nonaktif
+        $this->db->where('id', $id)->update('tb_alat', ['status' => $status]);
+
+        redirect('smartsiram/dashboard');
+    }
+
+    public function hapus_alat() {
+        $id = $this->input->post('id');
+        $this->M_Alat->delete($id);
+        redirect('smartsiram/dashboard');
     }
 
     public function sistem_waktu() {
@@ -42,6 +82,7 @@ class SmartSiram extends CI_Controller {
     public function login() {
         $this->load->view('auth/login');
     }
+
     public function daftar() {
         $this->load->view('auth/daftar');
     }
